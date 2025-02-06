@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: runners
+
+  # 추후 DB Server 구축 후 수정
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521:xe # localhost => DB Server ip
+    username: RUN
+    password: RUN
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+  mvc:
+    static-path-pattern: /uploads/** # uploads 정적 자원 요청 패턴 지정
+  web:
+    resources:
+      static-locations: file:uploads/ # 정적 자원 저장 경로
+
+  # multipart/form-data 크기지정
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+# Boot Server port
+server:
+  port: 80
+
+# SQL문 수행 및 수행 결과 반환을 위한 라이브러리
+mybatis:
+  configuration:
+    jdbc-type-for-null: VARCHAR # NULL => 값이 없을 때 NULL로 입력
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: 
+    # SQL 문 수행시 필요한 parameterType / resultType 클래스명만 적기위함
+    com.kh.runners.member.model.vo com.kh.runners.member.model.dto
+
+# SQL 수행 DEBUG : Boot Server의 console 에서 SQL 동작 확인용
+logging:
+  level:
+    org.apache.ibatis: DEBUG
+    java.sql: DEBUG
+    jdbc.sqlonly: DEBUG
+    jdbc.resultset: DEBUG
+    jdbc.audit: DEBUG
+
+# Token 사용을 위한 서명 확인용 비밀키
+jwt:
+  secret: 2INnRbEC7kw0g57eqQ+LCMiC+NiQKpaZv4ifQBZYdHQ=
