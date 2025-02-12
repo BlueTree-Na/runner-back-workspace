@@ -9,11 +9,11 @@ import com.kh.runners.schedule.model.vo.Schedule;
 public interface ScheduleService {
 
 	// 일정 등록
-	void insertSchedule(ScheduleDTO scheduleDto);
+	void save(ScheduleDTO scheduleDto);
 	// 일정 전체 조회	
-	List<Schedule> selectAll();
+	List<Schedule> findAll();
 	// 일정 상세 조회
-	Schedule selectById(Long scheduleNo);
+	Schedule findById(Long scheduleNo);
 	// 일정 수정
 	void updateSchedule(ScheduleDTO scheduleDto);
 	// 일정 삭제
