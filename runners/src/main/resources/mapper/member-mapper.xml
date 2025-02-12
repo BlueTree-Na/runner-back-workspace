@@ -4,9 +4,99 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.runners.member.model.mapper.MemberMapper">
 
+	<!-- 회원가입 -->
+	<insert id="insertUser" parameterType="string">
+	
+		INSERT 
+		INTO	TB_MEMBER (
+				USER_NO
+				,USER_NAME
+				,USER_ID
+				,USER_PWD
+				,NICKNAME
+				,GENDER
+				,EMAIL
+				,PHONE
+				,ROLE
+				,CREATE_AT
+				,STATUS
+				)
+	
+		VALUES	(
+				SEQ_UNO.NEXTVAL
+				,#{userName}
+				,#{userId} 
+				,#{userPwd} 
+				,#{nickName} 
+				,#{gender} 
+				,#{email} 
+				,#{phone} 
+				,#{role}
+				,DEFAULT
+				,DEFAULT
+				)
+	</insert>	
+	
+	
+	<!-- ID / PWD 검증 -->
+	<select id="findbyUserId" parameterType="string" resultType="Member"> 
+		SELECT 
+			   USER_NO userNo 
+			 , USER_ID userId
+			 , USER_PWD userPwd 
+			 , ROLE role
+		  FROM	
+		  	   TB_MEMBER 
+		 WHERE  
+			   USER_ID = #{userId} 
+		
+	</select>
+	
+	<!-- 정보 수정 -->
+	<update id="updateMember" parameterType="UpdateMemberDTO">
+		UPDATE
+				TB_MEMBER
+		SET
+				NICKNAME = #{nickName}
+				,PHONE = #{phone}
+				,FILE_URL = #{fileUrl}
+		WHERE
+				USER_NO = #{userNo}	
+	</update>
+
+
 	
 
 
+	<!-- 프로필 이미지 UPDATE 
+	<update id="updateProfileImage">
+	    UPDATE 
+	    		TB_USER_PROFILE
+	    SET 
+	    		IMAGE_URL = #{imageUrl},
+	    		STATUS = 'Y'
+	    WHERE 
+	    		USER_NO = #{userNo}
+	</update>
+	
+	프로필 이미지 INSERT 
+	<insert id="insertProfileImage">
+	    INSERT 
+	    INTO 
+	    		TB_USER_PROFILE 
+	    		(
+				PROFILE_NO
+				,USER_NO
+				,IMAGE_URL
+				,STATUS
+				)
+	    VALUES	(
+				SEQ_PNO.NEXTVAL
+				,#{userNo}
+				, #{imageUrl}
+				,'Y'
+				)
+	</insert>
 
-
+-->
 </mapper>  

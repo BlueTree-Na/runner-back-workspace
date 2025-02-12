@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Getter
+@Setter
 @ToString
 @Builder
 @NoArgsConstructor
@@ -20,7 +22,6 @@ public class Member {
 	private String nickName;
 	private String gender;
 	private String email;
-	private String address;
 	private String phone;
 	private String role;
 	private String createAt;
