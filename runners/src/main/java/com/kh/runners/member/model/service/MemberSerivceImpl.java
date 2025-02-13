@@ -1,10 +1,5 @@
 package com.kh.runners.member.model.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.kh.runners.auth.model.service.AuthenticationService;
 import com.kh.runners.auth.model.vo.CustomUserDetails;
 import com.kh.runners.exception.DuplicateUserException;
 import com.kh.runners.exception.MissmatchPasswordException;
@@ -35,7 +29,6 @@ public class MemberSerivceImpl implements MemberService {
 
 	private final MemberMapper memberMapper;
 	private final PasswordEncoder passwordEncoder;
-	private final AuthenticationService authService;
 	private final FileService fileService;
 	
 	
@@ -73,7 +66,7 @@ public class MemberSerivceImpl implements MemberService {
 		String encoedPassword = passwordEncoder.encode(changeEntity.getNewPassword());
 		
 		
-		Map<String, String> changeRequest = new HashMap();
+		Map<String, String> changeRequest = new HashMap<>();
 		changeRequest.put("userNo", String.valueOf(userNo));
 		changeRequest.put("password", encoedPassword);
 		

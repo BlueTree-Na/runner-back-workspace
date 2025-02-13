@@ -3,8 +3,8 @@ package com.kh.runners.member.cortroller;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -49,7 +49,7 @@ public class MemberController {
 	
 	
 	// 로그인
-	@PostMapping("login")
+	@PostMapping("/login")
 	public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginDTO requestMember) {
 		
 		log.info("userId: {}", requestMember.getUserId());
