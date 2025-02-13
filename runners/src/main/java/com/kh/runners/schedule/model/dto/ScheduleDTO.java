@@ -31,13 +31,23 @@ public class ScheduleDTO {
 	@NotBlank(message="내용은 비어있을 수 없습니다.")
 	private String scheduleContent;
 	
-	private LocalDateTime enrollDate;
-	
 	@NotBlank(message="날짜를 입력해주세요")
 	private LocalDateTime selectDate;
 	
-	private Long count;
+	private int maxIncount;
 	
-	private int maxMember;
+	@NotBlank
+	private String placeId;
+	
+	@NotBlank
+	private String place;
+	
+	@NotBlank
+	private double placeLat;
+	
+	@NotBlank
+	private double placeLon;
+	
+	private String placeAddr;
 	
 }

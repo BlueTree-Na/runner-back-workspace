@@ -24,7 +24,12 @@ public class Schedule {
 	private String scheduleContent;
 	private LocalDateTime enrollDate;
 	private LocalDateTime selectDate;
+	private int maxIncount;
 	private Long count;
-	private int maxMember;
+	private String placeId;
+	private String place;
+	private double placeLat;
+	private double placeLon;
+	private String placeAddr;
 	
 }
