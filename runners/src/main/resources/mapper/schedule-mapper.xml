@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.runners.schedule.model.mapper.ScheduleMapper">
+
+
+	<select id="findByRunning" resultType="Running">
+		
+	</select>
+
+
+	<insert id="save" parameterType="ScheduleDTO">
+		INSERT
+		  INTO
+		       TB_SCHEDULE
+		       (
+				SCHEDULE_NO,
+				SCHEDULE_WRITER,
+				SCHEDULE_TITLE,
+				SCHEDULE_CONTENT,
+				ENROLL_DATE,
+				SELECT_DATE,
+				MAX_INCOUNT,
+				COUNT,
+				PLACE,
+				PLACE_LAT,
+				PLACE_LON,
+				PLACE_ADDR
+			   )
+		VALUES
+			   (
+				SEQ_SNO.NEXTVAL,
+				#{scheduleWriter},
+				#{scheduleTitle},
+				#{scheduleContent},
+				SYSDATE,
+				#{selectDate},
+				#{count},
+				#{maxIncount},
+				#{place},
+				#{placeLat},
+				#{placeLon},
+				#{placeAddr}
+			   )
+	</insert>
+
+
+
+
+
+</mapper>  

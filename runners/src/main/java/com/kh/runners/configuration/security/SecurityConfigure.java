@@ -54,7 +54,7 @@ public class SecurityConfigure {
 								requests.requestMatchers(HttpMethod.PUT,"/members/**").authenticated(); 
 								requests.requestMatchers("/admin/**").hasRole("ADMIN"); 
 								requests.requestMatchers(HttpMethod.DELETE, "members").authenticated(); 	// 삭제
-								requests.requestMatchers(HttpMethod.POST, "/members/refresh").authenticated();		// 리프래시토큰 갱신
+								requests.requestMatchers(HttpMethod.POST, "/members/refresh", "/schedule/**").authenticated();		// 리프래시토큰 갱신
 							})
 							.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 							.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
