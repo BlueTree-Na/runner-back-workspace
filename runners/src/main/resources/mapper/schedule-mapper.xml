@@ -5,8 +5,27 @@
 <mapper namespace="com.kh.runners.schedule.model.mapper.ScheduleMapper">
 
 
-	<select id="findByRunning" resultType="Running">
-		
+	<select id="findAll" resultType="Schedule">
+		SELECT 
+			   SCHEDULE_NO scheduleNo,
+		       USER_NO scheduleWriter,
+		       SCHEDULE_TITLE scheduleTitle,
+		       SCHEDULE_CONTENT scheduleContent,
+		       ENROLL_DATE enrollDate,
+		       SELECT_DATE selectDate,
+		       COUNT count,
+		       MAX_INCOUNT maxIncount,
+		       PLACE_ID placeId,
+		       PLACE place,
+		       PLACE_LAT placeLat,
+		       PLACE_LON placeLon,
+		       PLACE_ADDR placeAddr
+		  FROM
+		  	   TB_SCHEDULE
+		  JOIN
+		  	   TB_MEMBER ON (SCHEDULE_WRITER = USER_NO)
+		  JOIN 
+		  	   TB_RUNNING ON (PLACE_ID = ESNTL_ID)
 	</select>
 
 
@@ -23,6 +42,7 @@
 				SELECT_DATE,
 				MAX_INCOUNT,
 				COUNT,
+				PLACE_ID,
 				PLACE,
 				PLACE_LAT,
 				PLACE_LON,
@@ -36,8 +56,9 @@
 				#{scheduleContent},
 				SYSDATE,
 				#{selectDate},
-				#{count},
 				#{maxIncount},
+				0,
+				#{placeId},
 				#{place},
 				#{placeLat},
 				#{placeLon},

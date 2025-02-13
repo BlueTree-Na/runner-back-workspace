@@ -3,6 +3,7 @@ package com.kh.runners.schedule.model.dto;
 import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,22 +32,22 @@ public class ScheduleDTO {
 	@NotBlank(message="내용은 비어있을 수 없습니다.")
 	private String scheduleContent;
 	
-	@NotBlank(message="날짜를 입력해주세요")
+	@NotNull(message="날짜를 입력해주세요")
 	private LocalDateTime selectDate;
 	
-	private int maxIncount;
+	private Integer maxIncount;
 	
-	@NotBlank
+	@NotBlank(message="장소를 선택하지 않았습니다.")
 	private String placeId;
 	
-	@NotBlank
+	@NotBlank(message="장소 이름은 비어있을 수 없습니다.")
 	private String place;
 	
-	@NotBlank
-	private double placeLat;
+	@NotNull(message="비어있을 수 없습니다.(좌표)")
+	private Double placeLat;
 	
-	@NotBlank
-	private double placeLon;
+	@NotNull(message="비어있을 수 없습니다.(좌표)")
+	private Double placeLon;
 	
 	private String placeAddr;
 	
