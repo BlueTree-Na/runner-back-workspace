@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.runners.course.model.mapper.CourseMapper">
+
+	<select id="findAll" resultType="Running">
+		SELECT
+			   ESNTL_ID runningId,
+			   WLK_COURS_FLAG_NM courseFlagName,
+			   WLK_COURS_NM courseName,
+			   COURS_DC courseContent,
+			   SIGNGU_NM sigunguName,
+			   COURS_LEVEL_NM courseLevelName,
+			   COURS_LT_CN courseLengthName,
+			   COURS_DETAIL_LT_CN courseLenDetail,
+			   ADIT_DC aditContent,
+			   COURS_TIME_CN courseTime,
+			   OPTN_DC optionContent,
+			   TOILET_DC toiletContent,
+			   CVNTL_NM cvntlName,
+			   LNM_ADDR loadAddr,
+			   COURS_SPOT_LA courseLat,
+			   COURS_SPOT_LO courseLon
+		  FROM 
+			   TB_RUNNING 
+		 WHERE 
+			   LNM_ADDR LIKE '%' || '서울' || '%'
+	</select>
+	
+	<select id="selectSearchList" parameterType="hashmap" resultType="board">
+		  FROM
+		  	   BOARD
+		  JOIN
+		  	   MEMBER ON (BOARD_WRITER = USER_NO)
+		 WHERE
+		 	   BOARD.STATUS = 'Y'
+		   AND
+		   	   BOARD_TYPE = 1
+		<!--<choose>
+			<when test="condition == 'writer'">
+				AND USER_ID
+			</when>
+			<when test="condition == 'title'">
+				AND BOARD_TITLE
+			</when>
+			<otherwise>
+				AND BOARD_CONTENT
+			</otherwise>
+		</choose>-->
+		 	   LIKE '%' || #{keyword} || '%'
+		 ORDER
+		 	BY
+		 	   BOARD_NO DESC	  
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+</mapper>  

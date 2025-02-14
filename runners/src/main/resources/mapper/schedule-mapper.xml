@@ -4,11 +4,9 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.runners.schedule.model.mapper.ScheduleMapper">
 
-
-	<select id="findAll" resultType="Schedule">
+	<sql id="scheduleColumn">
 		SELECT 
 			   SCHEDULE_NO scheduleNo,
-		       USER_NO scheduleWriter,
 		       SCHEDULE_TITLE scheduleTitle,
 		       SCHEDULE_CONTENT scheduleContent,
 		       ENROLL_DATE enrollDate,
@@ -20,6 +18,11 @@
 		       PLACE_LAT placeLat,
 		       PLACE_LON placeLon,
 		       PLACE_ADDR placeAddr
+	</sql>
+
+	<select id="findAll" resultType="Schedule">
+		<include refid="scheduleColumn" />
+		     , USER_ID scheduleWriter
 		  FROM
 		  	   TB_SCHEDULE
 		  JOIN
@@ -27,7 +30,6 @@
 		  JOIN 
 		  	   TB_RUNNING ON (PLACE_ID = ESNTL_ID)
 	</select>
-
 
 	<insert id="save" parameterType="ScheduleDTO">
 		INSERT
@@ -66,8 +68,56 @@
 			   )
 	</insert>
 
+	<update id="increaseCount" parameterType="long">
+		UPDATE
+		  	   TB_SCHEDULE
+		   SET
+		   	   COUNT = COUNT + 1
+		 WHERE
+		 	   SCHEDULE_NO = #{scheduleNo}
+	</update>
 
+	<select id="findById" parameterType="Schedule">
+		<include refid="scheduleColumn" />
+			 , SCHEDULE_WRITER scheduleWriter
+		  FROM
+		  	   TB_SCHEDULE
+		  JOIN
+		  	   TB_MEMBER ON (SCHEDULE_WRITER = USER_NO)
+		  JOIN 
+		  	   TB_RUNNING ON (PLACE_ID = ESNTL_ID)
+		 WHERE
+		 	   SCHEDULE_NO = #{scheduleNo}
+	</select>
 
+	<update id="update" parameterType="ScheduleDTO">
+		UPDATE 
+		       TB_SCHEDULE 
+		   SET 
+		       SCHEDULE_TITLE = #{scheduleTitle},
+		       SCHEDULE_CONTENT = #{scheduleContent},
+		       SELECT_DATE = #{selectDate},
+		       MAX_INCOUNT = #{maxIncount},
+		       PLACE_ID = #{placeId},
+		       PLACE = #{place},
+		       PLACE_LAT = #{placeLat},
+		       PLACE_LON = #{placeLon},
+		       PLACE_ADDR = #{placeAddr}
+		 WHERE 
+		       SCHEDULE_NO = #{scheduleNo}
+		   AND 
+		   	   SCHEDULE_WRITER = #{scheduleWriter}
+	</update>
+
+	<delete id="delete" parameterType="ScheduleDTO">
+		DELETE
+		  FROM
+		  	   TB_SCHEDULE	   
+		 WHERE 
+		 	   SCHEDULE_NO = #{scheduleNo}
+		   AND 
+		   	   SCHEDULE_WRITER = #{scheduleWriter}
+	</delete>
 
 
 </mapper>  

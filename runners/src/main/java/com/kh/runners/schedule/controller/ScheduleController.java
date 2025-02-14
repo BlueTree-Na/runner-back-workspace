@@ -4,10 +4,14 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.runners.schedule.model.dto.ScheduleDTO;
@@ -37,9 +41,49 @@ public class ScheduleController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<Schedule>> findAll(){
+	public ResponseEntity<List<Schedule>> findAll(@RequestParam(value = "page", required = false, defaultValue = "0") int page){
 		
-		return ResponseEntity.ok(scheduleService.findAll());
+		return ResponseEntity.ok(scheduleService.findAll(page));
 	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<Schedule> findById(@PathVariable(name = "id") Long scheduleNo){
+		
+		return ResponseEntity.ok(scheduleService.findById(scheduleNo));
+	}
+	
+	@PutMapping("/{id}")
+	public ResponseEntity<ScheduleDTO> update(@PathVariable(name = "id") Long scheduleNo,
+										@RequestBody @Valid ScheduleDTO scheduleDto) {
+		
+		return ResponseEntity.ok(scheduleService.update(scheduleNo, scheduleDto));
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> delete(@PathVariable(name = "id") Long scheduleNo
+									, @RequestBody ScheduleDTO scheduleDto) {
+		
+		scheduleService.delete(scheduleNo, scheduleDto);
+		
+		return ResponseEntity.status(HttpStatus.OK).body("삭제 성공!");
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }

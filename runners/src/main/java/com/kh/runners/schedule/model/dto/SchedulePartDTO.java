@@ -14,5 +14,8 @@ import lombok.ToString;
 public class SchedulePartDTO {
 
 	private Long partNo;
+	private Long refSno;
+	private Long userNo;
+	private String partStatus;
 	
 }

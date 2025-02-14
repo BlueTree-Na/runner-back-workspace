@@ -16,5 +16,8 @@ import lombok.ToString;
 public class SchedulePart {
 	
 	private Long partNo;
+	private Long refSno;
+	private Long userNo;
+	private String partStatus;
 
 }

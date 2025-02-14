@@ -51,11 +51,11 @@ public class SecurityConfigure {
 							.cors(Customizer.withDefaults())
 							.authorizeHttpRequests(requests -> {
 								requests.requestMatchers("/members", "/members/login", "/uploads/**").permitAll();	
-								requests.requestMatchers(HttpMethod.PUT,"/members/**").authenticated(); 
+								requests.requestMatchers(HttpMethod.PUT, "/members/**", "/schedule/**").authenticated(); 
 								requests.requestMatchers("/admin/**").hasRole("ADMIN"); 
-								requests.requestMatchers(HttpMethod.DELETE, "members").authenticated(); 	// 삭제
-								requests.requestMatchers(HttpMethod.POST, "/members/refresh", "/schedule/**").authenticated();		// 리프래시토큰 갱신
-								requests.requestMatchers(HttpMethod.GET, "/schedule/**").permitAll();
+								requests.requestMatchers(HttpMethod.DELETE, "members", "/schedule/**").authenticated(); 	// 삭제
+								requests.requestMatchers(HttpMethod.POST, "/members/refresh", "/schedule").authenticated();		// 리프래시토큰 갱신
+								requests.requestMatchers(HttpMethod.GET, "/schedule/**", "/course/**").permitAll();
 							})
 							.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 							.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)

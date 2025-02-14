@@ -39,7 +39,8 @@ mybatis:
   type-aliases-package: 
     # SQL 문 수행시 필요한 parameterType / resultType 클래스명만 적기위함
     com.kh.runners.member.model.vo com.kh.runners.member.model.dto com.kh.runners.token.model.dto
-    com.kh.runners.schedule.model.dto com.kh.runners.schedule.model.vo
+    com.kh.runners.schedule.model.vo com.kh.runners.schedule.model.dto
+    com.kh.runners.course.model.vo com.kh.runners.course.model.dto
 
 # SQL 수행 DEBUG : Boot Server의 console 에서 SQL 동작 확인용
 logging:
