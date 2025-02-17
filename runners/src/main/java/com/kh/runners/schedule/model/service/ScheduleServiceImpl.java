@@ -31,6 +31,18 @@ public class ScheduleServiceImpl implements ScheduleService {
 		
 		// 등록 페이지 권한 => SecurityConfiguration => 토큰으로 인가
 		
+		// 날짜 검증 ==> selectDate
+		// 이전 날짜 선택 불가능 ==> 현재 날짜보다 이전이면 안됨
+		// 없는 날짜 선택 불가능 ==> 달마다 선택 가능한 일자를 넘어서면 안됨
+		
+		// 장소가 DB에 존재하는지 여부
+		
+		// title, content 
+		// 공백여부 
+		// 크기 제한 여부
+		
+		// null여부 ==> valid로 판단 했나?
+		
 		// 검증 절차 이후 Data Insert
 		scheduleMapper.save(scheduleDto);
 	}

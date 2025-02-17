@@ -25,7 +25,7 @@ public class CourseController {
 	@GetMapping
 	public ResponseEntity<List<Running>> findAll(@RequestParam(name="page") int page){
 		
-		return ResponseEntity.ok(courseService.findAll(page));
+		return ResponseEntity.ok().body(courseService.findAll(page));
 	}
 	
 }

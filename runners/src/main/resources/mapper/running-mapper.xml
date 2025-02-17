@@ -4,39 +4,42 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.runners.course.model.mapper.CourseMapper">
 
-	<select id="findAll" resultType="Running">
+	<sql id="runningColumn">
 		SELECT
-			   ESNTL_ID runningId,
-			   WLK_COURS_FLAG_NM courseFlagName,
-			   WLK_COURS_NM courseName,
-			   COURS_DC courseContent,
-			   SIGNGU_NM sigunguName,
-			   COURS_LEVEL_NM courseLevelName,
-			   COURS_LT_CN courseLengthName,
-			   COURS_DETAIL_LT_CN courseLenDetail,
-			   ADIT_DC aditContent,
-			   COURS_TIME_CN courseTime,
-			   OPTN_DC optionContent,
-			   TOILET_DC toiletContent,
-			   CVNTL_NM cvntlName,
-			   LNM_ADDR loadAddr,
-			   COURS_SPOT_LA courseLat,
-			   COURS_SPOT_LO courseLon
+			   ESNTL_ID AS runningId,
+			   WLK_COURS_FLAG_NM AS courseFlagName,
+			   WLK_COURS_NM AS courseName,
+			   COURS_DC AS courseContent,
+			   SIGNGU_NM AS sigunguName,
+			   COURS_LEVEL_NM AS courseLevelName,
+			   COURS_LT_CN AS courseLengthName,
+			   COURS_DETAIL_LT_CN AS courseLenDetail,
+			   ADIT_DC AS aditContent,
+			   COURS_TIME_CN AS courseTime,
+			   OPTN_DC AS optionContent,
+			   TOILET_DC AS toiletContent,
+			   CVNTL_NM AS cvntlName,
+			   LNM_ADDR AS loadAddr,
+			   COURS_SPOT_LA AS courseLat,
+			   COURS_SPOT_LO AS courseLon
+	</sql>
+
+	<select id="findAll" resultType="Running">
+		<include refid="runningColumn" />
 		  FROM 
 			   TB_RUNNING 
 		 WHERE 
 			   LNM_ADDR LIKE '%' || '서울' || '%'
 	</select>
 	
-	<select id="selectSearchList" parameterType="hashmap" resultType="board">
+	<select id="selectSearchList" parameterType="hashmap" resultType="Running">
+		<include refid="runningColumn" />
 		  FROM
-		  	   BOARD
-		  JOIN
-		  	   MEMBER ON (BOARD_WRITER = USER_NO)
+		  	   TB_RUNNING
 		 WHERE
-		 	   BOARD.STATUS = 'Y'
-		   AND
-		   	   BOARD_TYPE = 1
+		 	   WLK_COURS_FLAG_NM LIKE '%' || #{keyword} || '%'
+		  
+		  
 		<!--<choose>
 			<when test="condition == 'writer'">
 				AND USER_ID
@@ -47,11 +50,12 @@
 			<otherwise>
 				AND BOARD_CONTENT
 			</otherwise>
-		</choose>-->
+		</choose>
 		 	   LIKE '%' || #{keyword} || '%'
 		 ORDER
 		 	BY
-		 	   BOARD_NO DESC	  
+		 	   BOARD_NO DESC
+		 	   -->
 	</select>
 
 

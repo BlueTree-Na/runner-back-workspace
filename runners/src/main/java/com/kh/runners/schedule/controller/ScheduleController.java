@@ -43,20 +43,20 @@ public class ScheduleController {
 	@GetMapping
 	public ResponseEntity<List<Schedule>> findAll(@RequestParam(value = "page", required = false, defaultValue = "0") int page){
 		
-		return ResponseEntity.ok(scheduleService.findAll(page));
+		return ResponseEntity.status(HttpStatus.valueOf(200)).body(scheduleService.findAll(page));
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Schedule> findById(@PathVariable(name = "id") Long scheduleNo){
 		
-		return ResponseEntity.ok(scheduleService.findById(scheduleNo));
+		return ResponseEntity.ok().body(scheduleService.findById(scheduleNo));
 	}
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<ScheduleDTO> update(@PathVariable(name = "id") Long scheduleNo,
 										@RequestBody @Valid ScheduleDTO scheduleDto) {
 		
-		return ResponseEntity.ok(scheduleService.update(scheduleNo, scheduleDto));
+		return ResponseEntity.ok().body(scheduleService.update(scheduleNo, scheduleDto));
 	}
 	
 	@DeleteMapping("/{id}")

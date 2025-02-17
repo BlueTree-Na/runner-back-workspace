@@ -68,7 +68,7 @@
 			   )
 	</insert>
 
-	<update id="increaseCount" parameterType="long">
+	<update id="increaseCount">
 		UPDATE
 		  	   TB_SCHEDULE
 		   SET
