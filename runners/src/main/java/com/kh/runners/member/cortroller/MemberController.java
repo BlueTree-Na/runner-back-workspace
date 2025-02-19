@@ -3,7 +3,6 @@ package com.kh.runners.member.cortroller;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,8 +35,8 @@ public class MemberController {
 	private final MemberService memberService;
 	private final AuthenticationService authService;
 	private final TokenService tokenService;
-	
 
+	
 	// 회원가입
 	@PostMapping
 	public ResponseEntity<?> insertUser(@Valid @RequestBody MemberDTO requestMember) {
@@ -65,7 +64,7 @@ public class MemberController {
 
 
 	// 회원정보수정
-	@PutMapping("profile")
+	@PutMapping("/profileUpdate")
 	public ResponseEntity<String> updateProfile(@Valid @ModelAttribute("updateMemberDTO") UpdateMemberDTO updateMemberDTO,
 												@RequestParam(name = "file", required = false) MultipartFile file) {
 	
@@ -101,7 +100,6 @@ public class MemberController {
 	
 	// 리프래시 토큰 갱신
 	@PostMapping("refresh")
-	
 	public ResponseEntity<Map> refresh(@RequestBody Map<String, String> tokens) {
 		log.info("아아악");
 		String refreshToken = tokens.get("refreshToken");

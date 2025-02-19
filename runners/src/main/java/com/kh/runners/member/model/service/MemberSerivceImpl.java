@@ -3,6 +3,7 @@ package com.kh.runners.member.model.service;
 import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.runners.auth.model.vo.CustomUserDetails;
+import com.kh.runners.auth.model.vo.SocialUser;
 import com.kh.runners.exception.DuplicateUserException;
 import com.kh.runners.exception.MissmatchPasswordException;
 import com.kh.runners.member.model.dto.ChangePasswordDTO;
@@ -78,12 +80,12 @@ public class MemberSerivceImpl implements MemberService {
 	// 회원정보 수정
 	@Override
 	public UpdateMemberDTO updateMember(UpdateMemberDTO updateMemberDTO, MultipartFile file) {
-		log.info("member {}", updateMemberDTO);
+		//log.info("member {}", updateMemberDTO);
 		// 비밀번호 검증
 	    Long userNo = passwordMatches(updateMemberDTO.getCurrentPassword());
-	    log.info("{userNo = {}", userNo);
+	    //log.info("{userNo = {}", userNo);
 	    updateMemberDTO.setUserNo(userNo);
-	    log.info("member {}", updateMemberDTO);
+	   // log.info("member {}", updateMemberDTO);
 	    // 파일 확인
 	    if (file != null && !file.isEmpty()) {
 	    	String filePath = fileService.store(file);
@@ -127,16 +129,54 @@ public class MemberSerivceImpl implements MemberService {
 		return userDetails.getUserNo();
 	}
 
+ 
+    // ===============================
+    // 3) 소셜/일반 공통 로직 or 기존 메서드
+    // ===============================
 
+    @Override
+    public int countBySocialId(String socialId) {
+        return memberMapper.countBySocialId(socialId);
+    }
 
+    @Override
+    public SocialUser findBySocialId(String socialId) {
+        return memberMapper.findBySocialId(socialId);
+    }
 
+    @Override
+    public void insertSocialUser(SocialUser socialUser) {
+        memberMapper.insertSocialUser(socialUser);
+    }
 
+    @Override
+    public Member findByUserNo(Long userNo) {
+        return memberMapper.findByUserNo(userNo);
+    }
 
+    @Override
+    public boolean existsByNickname(String randomNickName) {
+        return memberMapper.findByNickname(randomNickName) != null;
+    }
 
+    @Override
+    public void save(Member newMember) {
+        memberMapper.insertUser(newMember);
+    }
 
+    // ===============================
+    // 4) 비밀번호 변경, 회원정보 수정 등 (기존)
+    // ===============================
 
+    // ... (changePassword, updateMember, deleteByPassword 등 기존 메서드)
 
-	
-	
+    // ===============================
+    // 닉네임 랜덤 생성 로직 (공통)
+    // ===============================
+    private String generateRandomNickname() {
+        String uuid = UUID.randomUUID().toString().substring(0, 7);
+        return "user_" + uuid;
+    }
+
 	
 }

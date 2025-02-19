@@ -23,8 +23,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j; 
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
+@Component
 public class JwtFilter extends OncePerRequestFilter {
 
 	private final JwtUtil tokenUtil;

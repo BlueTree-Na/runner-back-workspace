@@ -16,13 +16,13 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-
 public class JwtUtil {
 	
 	
+
+	// javax.crypto.Secretkey타입의 필드로 JWT서명에 사용할 수 있음
 	@Value("${jwt.secret}")
 	private String secretKey;
-	// javax.crypto.Secretkey타입의 필드로 JWT서명에 사용할 수 있음
 	private SecretKey key;
 	
 	// 토큰 유효기간 설정

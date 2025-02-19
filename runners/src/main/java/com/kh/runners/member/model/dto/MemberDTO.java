@@ -4,10 +4,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+@Builder
 @Data
 @ToString
 @NoArgsConstructor
@@ -37,7 +39,7 @@ public class MemberDTO {
 	
 	@Size(max = 50, message = "이메일은 최대 50자까지 가능합니다.")
   
-	private String Email;
+	private String email;
 	
 	
 	@Size(min = 11, max = 11, message = "하이픈 없이 입력 해주세요 ") 
@@ -48,5 +50,6 @@ public class MemberDTO {
 	private String createAt;
 	private String status;
 	private String fileUrl;
+	private String socialId;
 
 }

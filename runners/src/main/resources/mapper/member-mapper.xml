@@ -64,39 +64,25 @@
 				USER_NO = #{userNo}	
 	</update>
 
-
+<!-- email 존재여부 확인 -->
+	<select id="findByEmail" parameterType="string" resultType="Member"> 
+		SELECT 
+			   EMAIL email
+		  FROM	
+		  	   TB_MEMBER 
+		 WHERE  
+			   EMAIL = #{email} 
+		
+	</select>
+	
+	<select id="findByNickname" parameterType="string" resultType="Member">
+		SELECT
+				NICKNAME nickName
+		FROM
+				TB_MEMBER
+		WHERE
+				NICKNAME = #{nickName}
+	</select>
 	
 
-
-	<!-- 프로필 이미지 UPDATE 
-	<update id="updateProfileImage">
-	    UPDATE 
-	    		TB_USER_PROFILE
-	    SET 
-	    		IMAGE_URL = #{imageUrl},
-	    		STATUS = 'Y'
-	    WHERE 
-	    		USER_NO = #{userNo}
-	</update>
-	
-	프로필 이미지 INSERT 
-	<insert id="insertProfileImage">
-	    INSERT 
-	    INTO 
-	    		TB_USER_PROFILE 
-	    		(
-				PROFILE_NO
-				,USER_NO
-				,IMAGE_URL
-				,STATUS
-				)
-	    VALUES	(
-				SEQ_PNO.NEXTVAL
-				,#{userNo}
-				, #{imageUrl}
-				,'Y'
-				)
-	</insert>
-
--->
 </mapper>  
