@@ -1,6 +1,7 @@
 package com.kh.runners.member.model.service;
 
 import java.security.InvalidParameterException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -64,6 +65,7 @@ public class MemberSerivceImpl implements MemberService {
 	@Override
 	public void changePassword(ChangePasswordDTO changeEntity) {
 		
+		// 비밀번호 검증
 		Long userNo = passwordMatches(changeEntity.getCurrentPassword());
 		String encoedPassword = passwordEncoder.encode(changeEntity.getNewPassword());
 		
@@ -75,17 +77,75 @@ public class MemberSerivceImpl implements MemberService {
 		memberMapper.changePassword(changeRequest);
 	}
 	
+	// 회원정보 조회
+	@Override
+	public Member findByUserNo(Long userNo) {
+	    return memberMapper.findByUserNo(userNo);
+	}
 	
+	
+	// 회원 프로필 조회 (닉네임 & 프로필 이미지)
+    @Override
+    public Map<String, String> getUserProfile() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+
+        Member member = memberMapper.findByUserNo(userDetails.getUserNo());
+
+        if (member == null) {
+            return Collections.emptyMap();
+        }
+
+        Map<String, String> response = new HashMap<>();
+        response.put("nickname", member.getNickName());
+        
+        // 프로필 이미지가 null이면 기본 이미지 반환
+        
+        response.put("profileImage", member.getFileUrl() != null ? member.getFileUrl() : "/default-profile.png");
+
+        return response;
+    }
+
+    // 프로필 이미지 업로드
+    @Override
+    public void uploadProfileImage(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("파일이 없습니다.");
+        }
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+        Long userNo = userDetails.getUserNo();
+
+        // 파일 저장 및 URL 반환
+        String filePath = fileService.store(file);
+
+        // DB 업데이트
+        updateProfileImage(userNo, filePath);
+    }
+
+    // 프로필 이미지 DB 업데이트
+    private void updateProfileImage(Long userNo, String filePath) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userNo", userNo);
+        params.put("fileUrl", filePath);
+        memberMapper.updateProfileImage(params);
+    }
+
 	
 	// 회원정보 수정
 	@Override
 	public UpdateMemberDTO updateMember(UpdateMemberDTO updateMemberDTO, MultipartFile file) {
 		//log.info("member {}", updateMemberDTO);
-		// 비밀번호 검증
-	    Long userNo = passwordMatches(updateMemberDTO.getCurrentPassword());
-	    //log.info("{userNo = {}", userNo);
-	    updateMemberDTO.setUserNo(userNo);
-	   // log.info("member {}", updateMemberDTO);
+		if(updateMemberDTO.getCurrentPassword() != null && !updateMemberDTO.getCurrentPassword().isEmpty()) {
+			
+			Long userNo = passwordMatches(updateMemberDTO.getCurrentPassword());
+	        updateMemberDTO.setUserNo(userNo);
+	    } else {
+	    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+	        updateMemberDTO.setUserNo(userDetails.getUserNo());
+	    }
 	    // 파일 확인
 	    if (file != null && !file.isEmpty()) {
 	    	String filePath = fileService.store(file);
@@ -100,9 +160,14 @@ public class MemberSerivceImpl implements MemberService {
 
 
 
-
+	// 회원정보 수정 시 비밀번호 검증
+	@Override
+	public Long verifyPassword(String password) {
+	    return passwordMatches(password); // 기존의 passwordMatches() 활용
+	}
 
 	
+
 	
 	
 	
@@ -122,7 +187,6 @@ public class MemberSerivceImpl implements MemberService {
 		CustomUserDetails userDetails = (CustomUserDetails)auth.getPrincipal();
 		
 		if(!passwordEncoder.matches(password, userDetails.getPassword())) {
-			
 			throw new MissmatchPasswordException("비밀번호가 일치하지 않습니다");
 		}
 		
@@ -130,9 +194,7 @@ public class MemberSerivceImpl implements MemberService {
 	}
 
  
-    // ===============================
-    // 3) 소셜/일반 공통 로직 or 기존 메서드
-    // ===============================
+    // 소셜/일반 공통 로직 
 
     @Override
     public int countBySocialId(String socialId) {
@@ -149,10 +211,6 @@ public class MemberSerivceImpl implements MemberService {
         memberMapper.insertSocialUser(socialUser);
     }
 
-    @Override
-    public Member findByUserNo(Long userNo) {
-        return memberMapper.findByUserNo(userNo);
-    }
 
     @Override
     public boolean existsByNickname(String randomNickName) {
@@ -164,19 +222,31 @@ public class MemberSerivceImpl implements MemberService {
         memberMapper.insertUser(newMember);
     }
 
-    // ===============================
-    // 4) 비밀번호 변경, 회원정보 수정 등 (기존)
-    // ===============================
 
-    // ... (changePassword, updateMember, deleteByPassword 등 기존 메서드)
 
-    // ===============================
     // 닉네임 랜덤 생성 로직 (공통)
-    // ===============================
     private String generateRandomNickname() {
         String uuid = UUID.randomUUID().toString().substring(0, 7);
         return "user_" + uuid;
     }
 
+
+    // id중복체크용
+	@Override
+	public Member findByUserId(String userId) {
+	    Member searched = memberMapper.findbyUserId(userId);
+	    return searched; 
+	}
+
+
+
+
+	
+
+
+
+
+
+	
 	
 }

@@ -13,6 +13,7 @@ public class UpdateMemberDTO {
 	
 	private Long userNo;
 	private String currentPassword;
+	private String gender;
 	private String nickName;
 	private String phone;
 	private String fileUrl;

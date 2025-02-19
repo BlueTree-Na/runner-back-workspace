@@ -25,7 +25,7 @@ public class MemberDTO {
 	@NotBlank(message = "아이디를 입력해주세요.")
 	private String userId;
 	
-	@Size(min = 4, max = 20, message = "비밀번호는 8~20자여야 합니다.")
+	@Size(min = 8, max = 20, message = "비밀번호는 8~20자로 입력해주세요.")
 	//@Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+]).+$",
 	//    	 message = "비밀번호는 영문, 숫자, 특수문자를 포함해야 합니다.")
 	private String userPwd;
@@ -38,13 +38,11 @@ public class MemberDTO {
 	private String gender;
 	
 	@Size(max = 50, message = "이메일은 최대 50자까지 가능합니다.")
-  
 	private String email;
 	
-	
-	@Size(min = 11, max = 11, message = "하이픈 없이 입력 해주세요 ") 
-	@Pattern(regexp = "^010[0-9]{8}$", message = "하이픈 없이 11자리 입력해주세요. ex. 01012345678")
-	
+
+	@Size(min = 13, max = 13, message = "전화번호는 하이픈(-)을 포함한 13자리여야 합니다.")
+	@Pattern(regexp = "^01[0-9]-[0-9]{4}-[0-9]{4}$", message = "전화번호는 010-1234-5678 형식으로 입력해주세요.")
 	private String phone;
 	private String role;
 	private String createAt;

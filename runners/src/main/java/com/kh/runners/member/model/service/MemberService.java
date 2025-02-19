@@ -18,6 +18,7 @@ public interface MemberService {
 	void changePassword(ChangePasswordDTO changeEntity);
 
 	void deleteByPassword(Map<String, String> password);
+	
 
 	UpdateMemberDTO updateMember(UpdateMemberDTO updateMemberDTO, MultipartFile file);
 
@@ -28,12 +29,22 @@ public interface MemberService {
 
 	void save(Member newMember);
 
+	Long verifyPassword(String password);
 	// ========== 소셜 회원 로직 ==========
 	int countBySocialId(String socialId);
 
 	SocialUser findBySocialId(String socialId);
 
 	void insertSocialUser(SocialUser socialUser);
+
+	void uploadProfileImage(MultipartFile file);
+
+	Map<String, String> getUserProfile();
+
+	Member findByUserId(String userId);
+
+
+
 	
 	// ========== 소셜 회원 가입을 위한 메서드 =============
 	//Member createSocialMember(String socialId, String nickname, String type);

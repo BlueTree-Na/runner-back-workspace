@@ -3,10 +3,10 @@ package com.kh.runners.auth.controller;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.runners.auth.model.service.NaverService;
 
@@ -16,8 +16,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Controller
-@RequestMapping("/naver")
+@RestController
+@RequestMapping("/members")
 @RequiredArgsConstructor
 public class SNSController {
 
@@ -35,9 +35,9 @@ public class SNSController {
 	 * @return ResponseEntity<Map<String, String>> - JWT 토큰 정보를 포함한 JSON 응답
 	 */
 
-    @GetMapping("/oauth")
-    public ResponseEntity<Map<String, String>> naverOAuth(@RequestParam("code") String code, 
-                                   @RequestParam("state") String state,
+    @GetMapping("/naver/oauth")
+    public ResponseEntity<Map<String, String>> naverOAuth(@RequestParam(value="code",required=false) String code, 
+                                   @RequestParam(value="state",required=false) String state,
                                    HttpServletResponse response) {
 		// 네이버 로그인 후 회원가입/로그인 및 JWT 토큰 발급
 		Map<String, String> tokenMap = naverService.processNaverLogin(code, state);

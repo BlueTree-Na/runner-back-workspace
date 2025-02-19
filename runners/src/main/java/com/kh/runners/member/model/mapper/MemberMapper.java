@@ -12,7 +12,7 @@ import com.kh.runners.member.model.vo.Member;
 
 @Mapper
 public interface MemberMapper {
-	// 회원 Id 조회
+	// 회원 Id 조회 
 	Member findbyUserId(String userId);
 	
 	// 회원 조회 (userNo 사용)
@@ -40,6 +40,11 @@ public interface MemberMapper {
 	void deleteByPassword(Long userNo);
 
 	Object findByNickname(String randomNickName);
+
+	void updateProfileImage(Map<String, Object> params);
+
+
+
 
 
 

@@ -4,9 +4,12 @@ spring:
 
   # 추후 DB Server 구축 후 수정
   datasource:
-    url: jdbc:oracle:thin:@192.168.20.206:1521:xe # localhost => DB Server ip
-    username: RUN
-    password: RUN
+   # url: jdbc:oracle:thin:@192.168.20.206:1521:xe # localhost => DB Server ip
+   # username: RUN
+   # password: RUN
+    url: jdbc:oracle:thin:@localhost:1521:xe # localhost => DB Server ip
+    username: RUN_SJ
+    password: RUN_SJ
     driver-class-name: oracle.jdbc.driver.OracleDriver
   mvc:
     static-path-pattern: /uploads/** # uploads 정적 자원 요청 패턴 지정

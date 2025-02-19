@@ -32,6 +32,8 @@ public class NaverService {
 	 * @return JWT 토큰 정보 (accessToken, refreshToken)
 	 */
 	public Map<String, String> processNaverLogin(String code, String state) {
+		
+		log.info("code:{}, state{}:", code,state);
 		// 1. 네이버 토큰 발급
 		HashMap<String, String> tokenParams = new HashMap<>();
 		tokenParams.put("type", "naver");
@@ -101,15 +103,6 @@ public class NaverService {
 		}
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+	
 		
 	}
