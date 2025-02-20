@@ -37,6 +37,7 @@ public class MemberSerivceImpl implements MemberService {
 	
 	@Override
 	public void insertUser(MemberDTO requestMember) {
+		
 		if ("".equals(requestMember.getUserId()) || "".equals(requestMember.getUserPwd())) {
 			throw new InvalidParameterException("아이디 또는 비밀번호를 입력해주세요");
 		}
@@ -190,7 +191,7 @@ public class MemberSerivceImpl implements MemberService {
 	}
 
  
-    // 소셜/일반 공통 로직 
+    // 소셜 로그인
 
     @Override
     public int countBySocialId(String socialId) {
@@ -201,11 +202,27 @@ public class MemberSerivceImpl implements MemberService {
     public SocialUser findBySocialId(String socialId) {
         return memberMapper.findBySocialId(socialId);
     }
-
+    
+    // 소셜 로그인 insert
     @Override
     public void insertSocialUser(SocialUser socialUser) {
-        memberMapper.insertSocialUser(socialUser);
-    }
+    	
+		/*
+		 * SocialUser existingUser =
+		 * memberMapper.findBySocialId(socialUser.getSocialId()); if(existingUser !=
+		 * null) { throw new DuplicateUserException("이미 존재하는 소셜 계정입니다."); }
+		 * 
+		 * Member socialMember = Member.builder() .nickName(socialUser.getNickName())
+		 * .email(socialUser.getEmail()) .phone(socialUser.getPhone())
+		 * .role("ROLE_USER") .build();
+		 * 
+		 * memberMapper.insertUser(socialMember); log.info("소셜 회원가입 성공: {}",
+		 * socialUser.getSocialId());
+		 * 
+		 * // 소셜 계정 정보 저장 (소셜 ID 매핑) socialUser.setUserNo(socialMember.getUserNo()); //
+		 * 생성된 회원의 userNo 가져오기 memberMapper.insertSocialUser(socialUser);
+		 */
+	}
 
     // ㄴ
     @Override
