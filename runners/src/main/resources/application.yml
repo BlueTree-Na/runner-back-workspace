@@ -47,7 +47,10 @@ mybatis:
     com.kh.runners.member.model.vo com.kh.runners.member.model.dto com.kh.runners.token.model.dto
     com.kh.runners.schedule.model.vo com.kh.runners.schedule.model.dto
     com.kh.runners.course.model.vo com.kh.runners.course.model.dto
+<<<<<<< HEAD
     com.kh.runners.auth.model.vo
+=======
+>>>>>>> 5d5e58b3ac081a6d2b8a32a7fa3c7387469bf193
 
 # SQL 수행 DEBUG : Boot Server의 console 에서 SQL 동작 확인용
 logging:

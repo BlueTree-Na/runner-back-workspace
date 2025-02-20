@@ -4,11 +4,32 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.runners.schedule.model.mapper.ScheduleMapper">
 
+	<sql id="scheduleColumn">
+		SELECT 
+			   SCHEDULE_NO scheduleNo,
+		       SCHEDULE_TITLE scheduleTitle,
+		       SCHEDULE_CONTENT scheduleContent,
+		       ENROLL_DATE enrollDate,
+		       SELECT_DATE selectDate,
+		       COUNT count,
+		       MAX_INCOUNT maxIncount,
+		       PLACE_ID placeId,
+		       PLACE place,
+		       PLACE_LAT placeLat,
+		       PLACE_LON placeLon,
+		       PLACE_ADDR placeAddr
+	</sql>
 
-	<select id="findByRunning" resultType="Running">
-		
+	<select id="findAll" resultType="Schedule">
+		<include refid="scheduleColumn" />
+		     , USER_ID scheduleWriter
+		  FROM
+		  	   TB_SCHEDULE
+		  JOIN
+		  	   TB_MEMBER ON (SCHEDULE_WRITER = USER_NO)
+		  JOIN 
+		  	   TB_RUNNING ON (PLACE_ID = ESNTL_ID)
 	</select>
-
 
 	<insert id="save" parameterType="ScheduleDTO">
 		INSERT
@@ -23,6 +44,7 @@
 				SELECT_DATE,
 				MAX_INCOUNT,
 				COUNT,
+				PLACE_ID,
 				PLACE,
 				PLACE_LAT,
 				PLACE_LON,
@@ -36,8 +58,9 @@
 				#{scheduleContent},
 				SYSDATE,
 				#{selectDate},
-				#{count},
 				#{maxIncount},
+				0,
+				#{placeId},
 				#{place},
 				#{placeLat},
 				#{placeLon},
@@ -45,8 +68,56 @@
 			   )
 	</insert>
 
+	<update id="increaseCount">
+		UPDATE
+		  	   TB_SCHEDULE
+		   SET
+		   	   COUNT = COUNT + 1
+		 WHERE
+		 	   SCHEDULE_NO = #{scheduleNo}
+	</update>
 
+	<select id="findById" parameterType="Schedule">
+		<include refid="scheduleColumn" />
+			 , SCHEDULE_WRITER scheduleWriter
+		  FROM
+		  	   TB_SCHEDULE
+		  JOIN
+		  	   TB_MEMBER ON (SCHEDULE_WRITER = USER_NO)
+		  JOIN 
+		  	   TB_RUNNING ON (PLACE_ID = ESNTL_ID)
+		 WHERE
+		 	   SCHEDULE_NO = #{scheduleNo}
+	</select>
 
+	<update id="update" parameterType="ScheduleDTO">
+		UPDATE 
+		       TB_SCHEDULE 
+		   SET 
+		       SCHEDULE_TITLE = #{scheduleTitle},
+		       SCHEDULE_CONTENT = #{scheduleContent},
+		       SELECT_DATE = #{selectDate},
+		       MAX_INCOUNT = #{maxIncount},
+		       PLACE_ID = #{placeId},
+		       PLACE = #{place},
+		       PLACE_LAT = #{placeLat},
+		       PLACE_LON = #{placeLon},
+		       PLACE_ADDR = #{placeAddr}
+		 WHERE 
+		       SCHEDULE_NO = #{scheduleNo}
+		   AND 
+		   	   SCHEDULE_WRITER = #{scheduleWriter}
+	</update>
+
+	<delete id="delete" parameterType="ScheduleDTO">
+		DELETE
+		  FROM
+		  	   TB_SCHEDULE	   
+		 WHERE 
+		 	   SCHEDULE_NO = #{scheduleNo}
+		   AND 
+		   	   SCHEDULE_WRITER = #{scheduleWriter}
+	</delete>
 
 
 </mapper>  
