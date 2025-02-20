@@ -22,7 +22,7 @@
 
 	<select id="findAll" resultType="Schedule">
 		<include refid="scheduleColumn" />
-		     , USER_ID scheduleWriter
+		     , NICKNAME scheduleWriter
 		  FROM
 		  	   TB_SCHEDULE
 		  JOIN
@@ -79,7 +79,7 @@
 
 	<select id="findById" parameterType="Schedule">
 		<include refid="scheduleColumn" />
-			 , SCHEDULE_WRITER scheduleWriter
+			 , NICKNAME scheduleWriter
 		  FROM
 		  	   TB_SCHEDULE
 		  JOIN
