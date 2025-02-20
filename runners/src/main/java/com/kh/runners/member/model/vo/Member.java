@@ -26,7 +26,7 @@ public class Member {
 	private String role;
 	private String createAt;
 	private String status;
-	public String FileUrl;
-	
+	private String FileUrl;
+	private String a;
 	
 }

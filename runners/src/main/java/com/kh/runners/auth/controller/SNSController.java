@@ -1,16 +1,18 @@
 package com.kh.runners.auth.controller;
 
 import java.util.Map;
+import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kh.runners.auth.model.service.NaverService;
+import com.kh.runners.auth.model.service.SnsService;
 
-import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +23,15 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class SNSController {
 
-	private final NaverService naverService;
+	private final SnsService snsService;
+	@Value("${naver.client_id}")
+	private String clientId;
+	
+	@Value("${naver.client_secret}")
+	private String clientSecret;
+	
+	@Value("${naver.redirect_uri}")
+	 String redirectUri;
 
 	/**
 	 * 네이버 로그인 후 콜백 엔드포인트
@@ -35,26 +45,40 @@ public class SNSController {
 	 * @return ResponseEntity<Map<String, String>> - JWT 토큰 정보를 포함한 JSON 응답
 	 */
 
+	@GetMapping("/naver/login-url")
+	public ResponseEntity<String> getNaverLoginUrl() {
+		
+		String state = UUID.randomUUID().toString();
+		log.info("state:{}", state);
+		String naverLoginUrl = "https://nid.naver.com/oauth2.0/authorize"
+	            + "?response_type=code"
+	            + "&client_id=" + clientId
+	            + "&redirect_uri=" + redirectUri
+	            + "&state=" + state;
+	
+		log.info("naverLoginUrl:{}", naverLoginUrl);
+		 return ResponseEntity.ok(naverLoginUrl);
+	}
+	
+	
     @GetMapping("/naver/oauth")
     public ResponseEntity<Map<String, String>> naverOAuth(@RequestParam(value="code",required=false) String code, 
                                    @RequestParam(value="state",required=false) String state,
-                                   HttpServletResponse response) {
+                                   HttpServletResponse response, HttpServletRequest request) {
+    	
 		// 네이버 로그인 후 회원가입/로그인 및 JWT 토큰 발급
-		Map<String, String> tokenMap = naverService.processNaverLogin(code, state);
-		String accessToken = tokenMap.get("accessToken"); // 토큰 키에 맞게 수정
+		log.info("code:{}, state:{}", code,state);
+		// 회원없으면 회원가입, 있으면 로그인, tokenMap -> jwt..
+    	Map<String, String> tokenMap = snsService.processNaverLogin(code, state);
 		
-		// 쿠키 생성 (예: accessToken 쿠키)
-		Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
-		accessTokenCookie.setHttpOnly(true);		// 자바스크립트에서 접근하지 못하도록 설정
-		accessTokenCookie.setSecure(true); 			// HTTPS 환경일 경우 true (개발환경에서는 false 가능)
-		accessTokenCookie.setPath("/");				// 전체 경로에서 사용
-		accessTokenCookie.setMaxAge(60 * 60 * 3);	// 쿠키 유효기간 (초 단위, 3시간)
-		
-		// 응답에 쿠키 추가
-		response.addCookie(accessTokenCookie);
+    	// 로그인 처리 로직 구현 필요
+    	
+//		String accessToken = tokenMap.get("accessToken"); // 토큰 키에 맞게 수정
+
 		
 		// 클라이언트에 토큰 정보를 JSON으로도 반환 가능
 		return ResponseEntity.ok(tokenMap);
     }
+    
 
 }

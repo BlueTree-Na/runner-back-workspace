@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 
 import com.kh.runners.auth.model.vo.SocialUser;
@@ -19,7 +20,7 @@ public interface MemberMapper {
 	Member findByUserNo(Long userNo);
 	
 	// 소셜 회원 존재 여부 (카운트)
-    int countBySocialId(String socialId);
+    int countBySocialId(@Param("socialId") String socialId);
 
     // 소셜 회원 정보 조회
     SocialUser findBySocialId(String socialId);
@@ -31,6 +32,7 @@ public interface MemberMapper {
 	void insertUser(Member requestMember);
 	
     // 수정
+	// void 리턴값이 없다 -> service 에서 값을 반환을 못받는다. insert가 됏는지 안됏는지 모른다! 이건 update,delete 포함이다!
 	void updateMember(UpdateMemberDTO updateMemberDTO);
     
 	@Update("UPDATE TB_MEMBER SET USER_PWD=#{password} WHERE USER_NO=#{userNo}")
@@ -39,7 +41,7 @@ public interface MemberMapper {
 	@Delete("DELETE FROM TB_MEMBER WHERE USER_NO=#{userNo}")
 	void deleteByPassword(Long userNo);
 
-	Object findByNickname(String randomNickName);
+	Integer findByNickname(String randomNickName);
 
 	void updateProfileImage(Map<String, Object> params);
 

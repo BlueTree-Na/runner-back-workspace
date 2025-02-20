@@ -54,6 +54,7 @@ public class MemberSerivceImpl implements MemberService {
 										.gender(requestMember.getGender())
 										.email(requestMember.getEmail())
 										.phone(requestMember.getPhone())
+										.a("123")
 										.role("ROLE_USER").build();
 		memberMapper.insertUser(member);
 		log.info("회원가입성공");
@@ -159,17 +160,12 @@ public class MemberSerivceImpl implements MemberService {
 	}
 
 
-
 	// 회원정보 수정 시 비밀번호 검증
 	@Override
 	public Long verifyPassword(String password) {
 	    return passwordMatches(password); // 기존의 passwordMatches() 활용
 	}
 
-	
-
-	
-	
 	
 	// 회원 탈퇴
 	@Override
@@ -211,10 +207,10 @@ public class MemberSerivceImpl implements MemberService {
         memberMapper.insertSocialUser(socialUser);
     }
 
-
+    // ㄴ
     @Override
-    public boolean existsByNickname(String randomNickName) {
-        return memberMapper.findByNickname(randomNickName) != null;
+    public int existsByNickname(String randomNickName) {
+        return memberMapper.findByNickname(randomNickName);
     }
 
     @Override
@@ -237,11 +233,6 @@ public class MemberSerivceImpl implements MemberService {
 	    Member searched = memberMapper.findbyUserId(userId);
 	    return searched; 
 	}
-
-
-
-
-	
 
 
 

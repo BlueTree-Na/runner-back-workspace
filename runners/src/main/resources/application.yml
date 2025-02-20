@@ -4,13 +4,13 @@ spring:
 
   # 추후 DB Server 구축 후 수정
   datasource:
-   # url: jdbc:oracle:thin:@192.168.20.206:1521:xe # localhost => DB Server ip
-   # username: RUN
-   # password: RUN
-    url: jdbc:oracle:thin:@localhost:1521:xe # localhost => DB Server ip
-    username: RUN_SJ
-    password: RUN_SJ
-    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@192.168.20.206:1521:xe # localhost => DB Server ip
+    username: RUN
+    password: RUN
+    #url: jdbc:oracle:thin:@localhost:1521:xe # localhost => DB Server ip
+    #username: RUN_SJ
+    #password: RUN_SJ
+    #driver-class-name: oracle.jdbc.driver.OracleDriver
   mvc:
     static-path-pattern: /uploads/** # uploads 정적 자원 요청 패턴 지정
   web:
@@ -34,6 +34,7 @@ naver:
   request-token-uri: https://nid.naver.com/oauth2.0/token
   client_id: S55AvttZtL3b87wDRQaD
   client_secret: zL_jgK9gR9
+  redirect_uri: http://localhost:80/members/naver/oauth
 
 # SQL문 수행 및 수행 결과 반환을 위한 라이브러리
 mybatis:
@@ -46,6 +47,7 @@ mybatis:
     com.kh.runners.member.model.vo com.kh.runners.member.model.dto com.kh.runners.token.model.dto
     com.kh.runners.schedule.model.vo com.kh.runners.schedule.model.dto
     com.kh.runners.course.model.vo com.kh.runners.course.model.dto
+    com.kh.runners.auth.model.vo
 
 # SQL 수행 DEBUG : Boot Server의 console 에서 SQL 동작 확인용
 logging:

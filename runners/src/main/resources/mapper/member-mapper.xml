@@ -5,8 +5,8 @@
 <mapper namespace="com.kh.runners.member.model.mapper.MemberMapper">
 
 	<!-- 회원가입 -->
-	<insert id="insertUser" parameterType="string">
-	
+	<insert id="insertUser" parameterType="Member">
+		
 		INSERT 
 		INTO	TB_MEMBER (
 				USER_NO
@@ -23,7 +23,7 @@
 				)
 	
 		VALUES	(
-				SEQ_UNO.NEXTVAL
+				SEQ_UNO.NEXTVAL 
 				,#{userName}
 				,#{userId} 
 				,#{userPwd} 
@@ -88,15 +88,53 @@
 				USER_NO = #{userNo}
 	</select>
 
-	
-	<select id="findByNickname" parameterType="string" resultType="Member">
+<!-- 닉네임 찾기-->
+	<select id="findByNickname" parameterType="string" resultType="int">
 		SELECT
-				NICKNAME nickName
+				COUNT(*)
 		FROM
 				TB_MEMBER
 		WHERE
 				NICKNAME = #{nickName}
 	</select>
-	
 
+<!-- 소셜아이디 찾기-->
+	<select id="countBySocialId"  resultType="int">
+		SELECT 
+				COUNT(*)
+		FROM 
+				TB_SOCIAL_USER
+		WHERE 
+				SOCIAL_ID = #{socialId}
+	</select> 
+
+<!-- 소셜등록 -->
+	<insert id="insertSocialUser" parameterType="SocialUser">
+		INSERT 
+		INTO	TB_SOCIAL_USER (
+				SOCIAL_ID
+				,USER_NO
+				,TYPE
+				)
+		VALUES	
+				(
+				#{socialId}
+				,SEQ_UNO.CURRVAL
+				,#{type}  
+				)
+	</insert>
+
+
+	<select id="findBySocialId" parameterType="string" resultType="SocialUser">
+		SELECT 	
+				SOCIAL_ID
+				,USER_NO
+				,TYPE
+		FROM 	
+				TB_SOCIAL_USER
+		WEHRE 	
+				SOCIAL_ID = #{socialId}
+	</select>
+	
+ 
 </mapper>  

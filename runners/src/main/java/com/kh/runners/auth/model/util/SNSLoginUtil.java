@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 //카카오, 네이버 공통으로 사용
 @Slf4j
 @Component
-public class SNSLoginUtil {
+public class SnsLoginUtil {
 	
 	@Value("${naver.client_id}")
 	private String clientId;
@@ -27,8 +27,8 @@ public class SNSLoginUtil {
 	@Value("${naver.client_secret}")
 	private String clientSecret;
 	
-	@Value("{naver.redirect-uri}")
-	 String redirect_uri;
+	@Value("${naver.redirect_uri}")
+	 String redirectUri;
 	
 	/**
 	 * API 호출
@@ -148,8 +148,9 @@ public class SNSLoginUtil {
 			
 			requestHeaders.put("Content-Type", "application/json");
 			requestHeaders.put("auth", "myAuth");
-			
+			log.info("url:{}", url);
 			String res = send(url, requestHeaders, "POST");
+			log.info("res:{}", res);
 			
 			JSONParser jsonParser = new JSONParser();
 			Object e = jsonParser.parse(res.toString());
@@ -205,7 +206,6 @@ public class SNSLoginUtil {
 			JSONParser jsonParser = new JSONParser();
 	        JSONObject obj = (JSONObject) jsonParser.parse(res.toString());
 	        
-	       
 	        JSONObject responseObj = (JSONObject) obj.get("response");
 	        
 	        result.put("id", (String) responseObj.get("id"));
@@ -213,7 +213,6 @@ public class SNSLoginUtil {
 	        result.put("email", (String) responseObj.get("email"));
 	        result.put("mobile", (String) responseObj.get("mobile"));
 	        
-			
 		} catch (Exception e) {
 			log.info("result4 :: {}", result.toString());
 			  e.printStackTrace();

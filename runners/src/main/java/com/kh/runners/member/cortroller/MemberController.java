@@ -56,7 +56,7 @@ public class MemberController {
 	    }
 
 	    // 닉네임 중복 체크 → 중복이면 예외 던지기
-	    if (memberService.existsByNickname(requestMember.getNickName())) {
+	    if (memberService.existsByNickname(requestMember.getNickName()) > 0) {
 	        throw new DuplicateUserException("이미 존재하는 닉네임입니다.");
 	    }
 
@@ -75,7 +75,10 @@ public class MemberController {
 		
 		log.info("발급된토큰: {}",tokens);
 		
-		LoginResponse response = LoginResponse.builder().username(requestMember.getUserId()).tokens(tokens).build();
+		LoginResponse response = LoginResponse.builder()
+				.username(requestMember.getUserId())
+				.tokens(tokens)
+				.build();
 		
 		return ResponseEntity.ok(response);
 	}

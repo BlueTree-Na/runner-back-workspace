@@ -24,4 +24,5 @@ public class SocialUser {
 	private String fileUrl;
     private String createAt;
     private String status;
+    private String email;
 }

@@ -25,7 +25,7 @@ public interface MemberService {
 	 // ========== 공통/기존 메서드 ==========
 	Member findByUserNo(Long userNo);
 
-	boolean existsByNickname(String randomNickName);
+	int existsByNickname(String randomNickName);
 
 	void save(Member newMember);
 
