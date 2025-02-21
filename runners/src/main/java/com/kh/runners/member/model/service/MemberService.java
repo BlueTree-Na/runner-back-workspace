@@ -42,6 +42,8 @@ public interface MemberService {
 	Map<String, String> getUserProfile();
 
 	Member findByUserId(String userId);
+	// 소셜로그인 member insert용
+	Long insertFristSocialUser(MemberDTO requestMember);
 
 
 

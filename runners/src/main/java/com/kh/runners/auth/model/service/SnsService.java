@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.runners.auth.model.util.SnsLoginUtil;
 import com.kh.runners.auth.model.vo.SocialUser;
@@ -31,9 +32,10 @@ public class SnsService {
 	 * @param state 네이버 상태값
 	 * @return JWT 토큰 정보 (accessToken, refreshToken)
 	 */
+	@Transactional
 	public Map<String, String> processNaverLogin(String code, String state) {
 		
-		log.info("code:{}, state:{}", code,state);
+//		log.info("code:{}, state:{}", code,state);
 		// 1. 네이버 토큰 발급
 		HashMap<String, String> tokenParams = new HashMap<>();
 		tokenParams.put("type", "naver");
@@ -54,20 +56,25 @@ public class SnsService {
 		
 		
 		HashMap<String, String> userInfo = snsLoginUtil.getUserInfo(userParams);
-		
+		log.info("네이버 로그인 응답 데이터: {}", userInfo);
+
 		// id 소셜아이디 값, 닉네임
 		String socialId = userInfo.get("id");
-		String nickname = userInfo.get("nickName"); 
+		String userName = userInfo.get("name"); 
+		String nickname = userInfo.get("nickname"); 
 		String phone = userInfo.get("mobile");
 		String email = userInfo.get("email");
+		String gender = userInfo.get("gender");
+		String profileImage = userInfo.get("profile_image");
 		
 		if (socialId == null || socialId.isEmpty()) {
 			throw new RuntimeException("네이버 사용자 정보에 'id'가 포함되어 있지 않습니다.");
 		}
-		
+	
 		// 3. TB_SOCIAL_USER 존재여부 확인 (countBySocialId)
-		log.info("socialId:{}", socialId);
+//		log.info("socialId:{}", socialId);
 		int count = memberService.countBySocialId(socialId);
+		Long userNo;
 		
 		// DB에 없는 경우 → 신규 소셜 회원 INSERT
 		if (count == 0) {
@@ -78,37 +85,50 @@ public class SnsService {
 				finalNickname = generateRandomNickname();
 			}
 			
-			// 회원저장 보안하고
-			MemberDTO memberDto = MemberDTO.builder()
-					.socialId(socialId)
-					.nickName(finalNickname)
-					.userPwd("")
-					.role("USER")
-					.phone(phone)
-					.email(email)
-					.build();
 			
-			memberService.insertUser(memberDto);
+			// TB_MEMBER INSERT
+			MemberDTO newMember = MemberDTO.builder()
+									        .userName(userName)
+									        .nickName(finalNickname)
+									        .email(email)
+									        .phone(phone)
+									        .gender(gender)
+									        .fileUrl(profileImage)
+									        .role("ROLE_USER") // 일반 사용자
+									        .build();
 			
-			// 소셜 저장
-			SocialUser newUser = SocialUser.builder()
-					.socialId(socialId)
-					.build();
+	
+			userNo = memberService.insertFristSocialUser(newMember);
+			
+			log.info("신규 회원가입 완료: {}, userNo : {}", newMember, userNo);
+			
+			// TB_SOCIALUSER INSERT
+			SocialUser newSocialUser = SocialUser.builder()
+												.socialId(socialId)
+												.userNo(userNo)
+												.build();
+			
+			log.info("소셜 계정 정보 저장: {}", newSocialUser);
+			memberService.insertSocialUser(newSocialUser);
+			
+		} else {
+			log.info("Is this your socialId?? : {}", socialId);
+			SocialUser socialUser = memberService.findBySocialId(socialId);
+			
+			if (socialUser == null) {
+	            throw new RuntimeException("소셜 회원 정보 조회에 실패했습니다.");
+	        }
+			
+	        userNo = socialUser.getUserNo();
+	    }
 
-			memberService.insertSocialUser(newUser); 
-		}
-		
-		// 4. 소셜 회원 정보 조회
-		SocialUser socialUser = memberService.findBySocialId(socialId);
-		if (socialUser == null) {
-            throw new RuntimeException("소셜 회원 정보 조회에 실패했습니다.");
-        }
-		
-		// 5. JWT 토큰 발급 (TokenService의 generateToken 메서드는 username과 userNo를 이용)
-		Map<String, String> tokenDto = tokenService.generateToken(socialId, socialUser.getUserNo());
-		
-		return tokenDto;
+	    // 6️. JWT 토큰 발급
+	    Map<String, String> tokenDto = tokenService.generateToken(socialId, userNo);
+	    return tokenDto;
 	}
+
+	
+	
 	// 랜덤 닉네임 생성 (예: "user_ab12cd3")
 	private String generateRandomNickname() {
 		

@@ -25,8 +25,11 @@ public interface MemberMapper {
     // 소셜 회원 정보 조회
     SocialUser findBySocialId(String socialId);
 
-    // 새 소셜 회원 등록
+    // 새 회원 등록
     void insertSocialUser(SocialUser socialUser);
+    
+    // 새 소셜 회원 등록
+    void insertFristSocialUser(Member member);
     
 	// 회원 등록
 	void insertUser(Member requestMember);

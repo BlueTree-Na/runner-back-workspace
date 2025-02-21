@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.runners.auth.model.service.SnsService;
@@ -53,7 +54,7 @@ public class SNSController {
 		String naverLoginUrl = "https://nid.naver.com/oauth2.0/authorize"
 	            + "?response_type=code"
 	            + "&client_id=" + clientId
-	            + "&redirect_uri=" + redirectUri
+	            + "&redirect_uri=http://localhost:3000/auth"
 	            + "&state=" + state;
 	
 		log.info("naverLoginUrl:{}", naverLoginUrl);
@@ -61,21 +62,20 @@ public class SNSController {
 	}
 	
 	
-    @GetMapping("/naver/oauth")
+    @GetMapping(value = "/naver/oauth", produces = "application/json; charset=UTF-8")
+    @ResponseBody
     public ResponseEntity<Map<String, String>> naverOAuth(@RequestParam(value="code",required=false) String code, 
                                    @RequestParam(value="state",required=false) String state,
                                    HttpServletResponse response, HttpServletRequest request) {
     	
 		// 네이버 로그인 후 회원가입/로그인 및 JWT 토큰 발급
-		log.info("code:{}, state:{}", code,state);
+//		log.info("code:{}, state:{}", code,state);
 		// 회원없으면 회원가입, 있으면 로그인, tokenMap -> jwt..
     	Map<String, String> tokenMap = snsService.processNaverLogin(code, state);
 		
-    	// 로그인 처리 로직 구현 필요
-    	
-//		String accessToken = tokenMap.get("accessToken"); // 토큰 키에 맞게 수정
+    	//String accessToken = tokenMap.get("accessToken"); // 토큰 키에 맞게 수정
 
-		
+    
 		// 클라이언트에 토큰 정보를 JSON으로도 반환 가능
 		return ResponseEntity.ok(tokenMap);
     }

@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.runners.auth.model.vo.CustomUserDetails;
@@ -35,6 +36,7 @@ public class MemberSerivceImpl implements MemberService {
 	private final FileService fileService;
 	
 	
+	// 일반 회원가입 INSERT
 	@Override
 	public void insertUser(MemberDTO requestMember) {
 		
@@ -55,7 +57,6 @@ public class MemberSerivceImpl implements MemberService {
 										.gender(requestMember.getGender())
 										.email(requestMember.getEmail())
 										.phone(requestMember.getPhone())
-										.a("123")
 										.role("ROLE_USER").build();
 		memberMapper.insertUser(member);
 		log.info("회원가입성공");
@@ -203,28 +204,58 @@ public class MemberSerivceImpl implements MemberService {
         return memberMapper.findBySocialId(socialId);
     }
     
-    // 소셜 로그인 insert
-    @Override
-    public void insertSocialUser(SocialUser socialUser) {
+    
+    
+    // 소셜 로그인 TB_MEMBER INSERT
+    @Transactional
+ 	@Override
+ 	public Long insertFristSocialUser(MemberDTO requestMember) {
+ 		
+// 		int searched = memberMapper.countBySocialId(requestMember.getSocialId());
+//	
+// 		if(searched < 1) {
+// 			throw new DuplicateUserException("이미 존재하는 ID입니다.");
+// 		}
+ 		
     	
-		/*
-		 * SocialUser existingUser =
-		 * memberMapper.findBySocialId(socialUser.getSocialId()); if(existingUser !=
-		 * null) { throw new DuplicateUserException("이미 존재하는 소셜 계정입니다."); }
-		 * 
-		 * Member socialMember = Member.builder() .nickName(socialUser.getNickName())
-		 * .email(socialUser.getEmail()) .phone(socialUser.getPhone())
-		 * .role("ROLE_USER") .build();
-		 * 
-		 * memberMapper.insertUser(socialMember); log.info("소셜 회원가입 성공: {}",
-		 * socialUser.getSocialId());
-		 * 
-		 * // 소셜 계정 정보 저장 (소셜 ID 매핑) socialUser.setUserNo(socialMember.getUserNo()); //
-		 * 생성된 회원의 userNo 가져오기 memberMapper.insertSocialUser(socialUser);
-		 */
+ 		Member member = Member.builder().userName(requestMember.getUserName())
+ 										.userId(null)
+ 										.userPwd(null)
+ 										.nickName(requestMember.getNickName())
+ 										.gender(requestMember.getGender())
+ 										.email(requestMember.getEmail())
+ 										.phone(requestMember.getPhone())
+ 										.fileUrl(requestMember.getFileUrl())
+ 										.role("ROLE_USER").build();
+ 		log.info("회원 가입 Member 정보 : userNo={}, email={}", member.getUserNo(), member.getEmail());
+// 		return memberMapper.insertFristSocialUser(member).getUserNo();
+// 		return memberMapper.insertFristSocialUser(member);
+ 		
+ 		memberMapper.insertFristSocialUser(member);
+ 		log.info("왔냐고 안왔냐고 재대로 오라고 : {}", member.getUserNo());
+ 		return member.getUserNo();
+ 	}
+    
+    
+    
+    // 소셜 로그인 TB_SOCIALUSER INSERT
+    @Transactional
+	@Override
+	public void insertSocialUser(SocialUser socialUser) {
+	    // 중복 체크 (소셜 ID 기준)
+		log.info("회원정보:{}",socialUser);
+		log.info("DB인서트 socialId: {}", socialUser.getSocialId());
+		SocialUser existingUser = memberMapper.findBySocialId(socialUser.getSocialId());
+		if (existingUser != null) {
+		    throw new DuplicateUserException("이미 존재하는 소셜 계정입니다.");
+		}
+		
+		log.info("TB_SOCAIL_USER 정보 : {}", socialUser);
+		memberMapper.insertSocialUser(socialUser);
 	}
 
-    // ㄴ
+
+    // 
     @Override
     public int existsByNickname(String randomNickName) {
         return memberMapper.findByNickname(randomNickName);

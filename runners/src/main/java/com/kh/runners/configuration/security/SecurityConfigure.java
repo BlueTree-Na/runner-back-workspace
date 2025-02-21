@@ -50,7 +50,7 @@ public class SecurityConfigure {
 							.csrf(AbstractHttpConfigurer::disable)
 							.cors(Customizer.withDefaults())
 							.authorizeHttpRequests(requests -> {
-								requests.requestMatchers("/members", "/members/login", "/uploads/**", "/members/**").permitAll();	
+								requests.requestMatchers("/members", "/members/login", "/uploads/**", "/members/**", "/members/naver/**").permitAll();	
 								requests.requestMatchers(HttpMethod.PUT, "/members","/members/**","/schedule/**").authenticated(); 
 								requests.requestMatchers("/admin/**").hasRole("ADMIN"); 
 								requests.requestMatchers(HttpMethod.DELETE, "members","/schedule/**").authenticated(); 	// 삭제

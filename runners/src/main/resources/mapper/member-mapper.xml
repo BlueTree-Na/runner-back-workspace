@@ -37,7 +37,59 @@
 				)
 	</insert>	
 	
+	<!-- 소셜로그인 TB_MEMBER INSERT-->
+	<insert id="insertFristSocialUser" parameterType="Member" useGeneratedKeys="true" keyProperty="userNo">
+		<selectKey keyProperty="userNo" resultType="Long" order="AFTER">
+			SELECT SEQ_UNO.CURRVAL as userNo FROM DUAL
+		</selectKey>
+
+		INSERT 
+		INTO	TB_MEMBER (
+				USER_NO
+				,USER_NAME
+				,USER_ID
+				,USER_PWD
+				,NICKNAME
+				,GENDER
+				,EMAIL
+				,PHONE
+				,ROLE
+				,FILE_URL
+				,CREATE_AT
+				,STATUS
+				)
 	
+		VALUES	(
+				SEQ_UNO.NEXTVAL
+				,#{userName}
+				,#{userId} 
+				,#{userPwd} 
+				,#{nickName} 
+				,#{gender} 
+				,#{email} 
+				,#{phone} 
+				,#{role}
+				,#{fileUrl}
+				,DEFAULT
+				,DEFAULT
+				)
+	</insert>
+	
+	
+<!-- 소셜등록 -->
+	<insert id="insertSocialUser" parameterType="SocialUser">
+		INSERT 
+		INTO	TB_SOCIAL_USER (
+				SOCIAL_ID
+				,USER_NO
+				)
+		VALUES	
+				(
+				#{socialId}
+				,#{userNo}
+				)
+	</insert>
+
 	<!-- ID / PWD 검증 -->
 	<select id="findbyUserId" parameterType="string" resultType="Member"> 
 		SELECT 
@@ -99,7 +151,7 @@
 	</select>
 
 <!-- 소셜아이디 찾기-->
-	<select id="countBySocialId"  resultType="int">
+	<select id="countBySocialId" parameterType="string" resultType="int">
 		SELECT 
 				COUNT(*)
 		FROM 
@@ -108,31 +160,15 @@
 				SOCIAL_ID = #{socialId}
 	</select> 
 
-<!-- 소셜등록 -->
-	<insert id="insertSocialUser" parameterType="SocialUser">
-		INSERT 
-		INTO	TB_SOCIAL_USER (
-				SOCIAL_ID
-				,USER_NO
-				,TYPE
-				)
-		VALUES	
-				(
-				#{socialId}
-				,SEQ_UNO.CURRVAL
-				,#{type}  
-				)
-	</insert>
-
 
 	<select id="findBySocialId" parameterType="string" resultType="SocialUser">
 		SELECT 	
-				SOCIAL_ID
-				,USER_NO
+				SOCIAL_ID socialId
+				,USER_NO userNo
 				,TYPE
 		FROM 	
 				TB_SOCIAL_USER
-		WEHRE 	
+		WHERE 	
 				SOCIAL_ID = #{socialId}
 	</select>
 	
