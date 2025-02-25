@@ -5,6 +5,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import com.kh.runners.auth.model.vo.SocialUser;
@@ -21,10 +22,18 @@ public interface MemberMapper {
 	
 	// 소셜 회원 존재 여부 (카운트)
     int countBySocialId(@Param("socialId") String socialId);
+    
+    // 닉네임 중복 검증 (카운트)
+    @Select("SELECT COUNT(*) FROM TB_MEMBER WHERE NICKNAME = #{nickName}")
+    int countByNickname(@Param("nickName") String nickName);
 
     // 소셜 회원 정보 조회
     SocialUser findBySocialId(String socialId);
-
+    
+    // 회원 조회 (email 사용)
+    @Select("SELECT COUNT(*) FROM TB_MEMBER WHERE EMAIL = #{email}")
+    int countByEmail(String email);
+    
     // 새 회원 등록
     void insertSocialUser(SocialUser socialUser);
     
@@ -35,18 +44,19 @@ public interface MemberMapper {
 	void insertUser(Member requestMember);
 	
     // 수정
-	// void 리턴값이 없다 -> service 에서 값을 반환을 못받는다. insert가 됏는지 안됏는지 모른다! 이건 update,delete 포함이다!
 	void updateMember(UpdateMemberDTO updateMemberDTO);
     
 	@Update("UPDATE TB_MEMBER SET USER_PWD=#{password} WHERE USER_NO=#{userNo}")
 	void changePassword(Map<String, String> changeRequest);
 	
-	@Delete("DELETE FROM TB_MEMBER WHERE USER_NO=#{userNo}")
+	@Update("UPDATE TB_MEMBER SET STATUS='3' WHERE USER_NO=#{userNo}")
 	void deleteByPassword(Long userNo);
-
+	
+	// 소셜랜덤닉네임 체크용
 	Integer findByNickname(String randomNickName);
-
+	
 	void updateProfileImage(Map<String, Object> params);
+
 
 
 

@@ -20,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.runners.auth.model.service.AuthenticationService;
 import com.kh.runners.auth.model.vo.CustomUserDetails;
-import com.kh.runners.exception.DuplicateUserException;
 import com.kh.runners.exception.MissmatchPasswordException;
 import com.kh.runners.member.model.dto.ChangePasswordDTO;
 import com.kh.runners.member.model.dto.LoginDTO;
@@ -50,21 +49,34 @@ public class MemberController {
 	@PostMapping
 	public ResponseEntity<Map<String, String>> insertUser(@Valid @RequestBody MemberDTO requestMember) {
 
-	    // ID 중복 체크 → 중복이면 예외 던지기
-	    if (memberService.findByUserId(requestMember.getUserId()) != null) {
-	        throw new DuplicateUserException("이미 존재하는 아이디입니다.");
-	    }
-
-	    // 닉네임 중복 체크 → 중복이면 예외 던지기
-	    if (memberService.existsByNickname(requestMember.getNickName()) > 0) {
-	        throw new DuplicateUserException("이미 존재하는 닉네임입니다.");
-	    }
-
-	    // 회원가입 진행
 	    memberService.insertUser(requestMember);
+	    
 	    return ResponseEntity.ok(Map.of("message", "회원가입에 성공했습니다."));
 	}
 	
+	
+	// ID, EMAIL, NICKNAME DB 중복 체크
+    @GetMapping("/check-duplicate")
+    public ResponseEntity<Map<String, Boolean>> checkDuplicate(@RequestParam("field") String field, @RequestParam("value") String value) {
+        boolean available = false;
+        switch (field) {
+            case "id":
+                available = (memberService.findByUserId(value) == null);
+                break;
+            case "email":
+            	if (!value.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
+                    throw new IllegalArgumentException("유효하지 않은 이메일 형식입니다.");
+                }
+                available = (memberService.countByEmail(value) == 0);
+                break;
+            case "nickname":
+                available = (memberService.countByNickname(value) == 0);
+                break;
+            default:
+                throw new IllegalArgumentException("유효하지 않은 값 입니다.");
+        }
+        return ResponseEntity.ok(Collections.singletonMap("available", available));
+    }
 	
 	// 로그인
 	@PostMapping("/login")
@@ -103,11 +115,16 @@ public class MemberController {
 	    memberDTO.setGender(member.getGender());
 	    memberDTO.setPhone(member.getPhone());
 	    memberDTO.setEmail(member.getEmail());
+	    // 소셜 회원 여부: socialId가 있으면 true
+	    memberDTO.setSocialUser(member.getSocialId() != null);
 
 	    return ResponseEntity.ok(memberDTO);
 	}
+	
+	
 
-	  
+	
+	
 	
 	// 회원 프로필 조회 (닉네임 & 프로필 이미지)
 	@GetMapping("/profile/image")
@@ -119,7 +136,7 @@ public class MemberController {
 		return ResponseEntity.ok(userProfile);
 	}
 	
-	// 🚀 프로필 이미지 업로드
+	// 프로필 이미지 업로드
 	@PostMapping("/uploadProfile")
 	public ResponseEntity<String> uploadProfileImage(@RequestParam("profileImage") MultipartFile file) {
 			memberService.uploadProfileImage(file);
@@ -159,7 +176,6 @@ public class MemberController {
 	public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordDTO changeEntity) {
 		
 		// log.info("changeEntity : {}", changeEntity );
-		 
 		memberService.changePassword(changeEntity);
 		
 		return ResponseEntity.ok("업데이트에 성공했습니다");

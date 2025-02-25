@@ -35,32 +35,80 @@ public class MemberSerivceImpl implements MemberService {
 	private final PasswordEncoder passwordEncoder;
 	private final FileService fileService;
 	
+    // 일반 회원 중복 체크용 메소드
+	@Override
+	public Member findByUserId(String userId) {
+	    Member searched = memberMapper.findbyUserId(userId);
+	    return searched; 
+	}
+
+	private void validateRequiredFields(MemberDTO requestMember) {
+	    if ("".equals(requestMember.getUserId()) || "".equals(requestMember.getUserPwd())) {
+	        throw new InvalidParameterException("아이디 또는 비밀번호를 입력해주세요");
+	    }
+	}
+
+	private void checkDuplicateUserId(String userId) {
+	    if (memberMapper.findbyUserId(userId) != null) {
+	        throw new DuplicateUserException("이미 존재하는 ID입니다.");
+	    }
+	}
+
+	private void checkDuplicateEmail(String email) {
+	    int emailCount = memberMapper.countByEmail(email);
+	    if (emailCount > 0) {
+	        throw new DuplicateUserException("이미 존재하는 이메일입니다.");
+	    }
+	}
+
+	private void checkDuplicateNickname(String nickName) {
+	    int nickCount = memberMapper.countByNickname(nickName);
+	    if (nickCount > 0) {
+	        throw new DuplicateUserException("이미 존재하는 닉네임입니다.");
+	    }
+	}
+
+
+	@Override
+	public int countByEmail(String email) {
+		return memberMapper.countByEmail(email);
+	}
+
+	@Override
+	public int countByNickname(String nickName) {
+		return memberMapper.countByNickname(nickName);
+	}
+	
 	
 	// 일반 회원가입 INSERT
 	@Override
 	public void insertUser(MemberDTO requestMember) {
 		
-		if ("".equals(requestMember.getUserId()) || "".equals(requestMember.getUserPwd())) {
-			throw new InvalidParameterException("아이디 또는 비밀번호를 입력해주세요");
-		}
-		
-		Member searched = memberMapper.findbyUserId(requestMember.getUserId());
-		
-		if(searched != null) {
-			throw new DuplicateUserException("이미 존재하는 ID입니다.");
-		}
-		
-		Member member = Member.builder().userName(requestMember.getUserName())
-										.userId(requestMember.getUserId())
-										.userPwd(passwordEncoder.encode(requestMember.getUserPwd()))
-										.nickName(requestMember.getNickName())
-										.gender(requestMember.getGender())
-										.email(requestMember.getEmail())
-										.phone(requestMember.getPhone())
-										.role("ROLE_USER").build();
-		memberMapper.insertUser(member);
-		log.info("회원가입성공");
+		// 필수 값 검증(ID/PW)
+	    validateRequiredFields(requestMember);
+
+	    // 중복 체크(UserID,Email,NickName)
+	    checkDuplicateUserId(requestMember.getUserId());
+	    checkDuplicateEmail(requestMember.getEmail());
+	    checkDuplicateNickname(requestMember.getNickName());
+	    
+	    // 회원 객체 생성 및 저장
+	    Member member = Member.builder()
+					            .userName(requestMember.getUserName())
+					            .userId(requestMember.getUserId())
+					            .userPwd(passwordEncoder.encode(requestMember.getUserPwd()))
+					            .nickName(requestMember.getNickName())
+					            .gender(requestMember.getGender())
+					            .email(requestMember.getEmail())
+					            .phone(requestMember.getPhone())
+					            .role("ROLE_USER")
+					            .build();
+	    
+	    memberMapper.insertUser(member);
+	    log.info("회원가입 성공");
 	}
+	
+	
 	
 	
 	
@@ -228,8 +276,6 @@ public class MemberSerivceImpl implements MemberService {
  										.fileUrl(requestMember.getFileUrl())
  										.role("ROLE_USER").build();
  		log.info("회원 가입 Member 정보 : userNo={}, email={}", member.getUserNo(), member.getEmail());
-// 		return memberMapper.insertFristSocialUser(member).getUserNo();
-// 		return memberMapper.insertFristSocialUser(member);
  		
  		memberMapper.insertFristSocialUser(member);
  		log.info("왔냐고 안왔냐고 재대로 오라고 : {}", member.getUserNo());
@@ -274,13 +320,6 @@ public class MemberSerivceImpl implements MemberService {
         return "user_" + uuid;
     }
 
-
-    // id중복체크용
-	@Override
-	public Member findByUserId(String userId) {
-	    Member searched = memberMapper.findbyUserId(userId);
-	    return searched; 
-	}
 
 
 

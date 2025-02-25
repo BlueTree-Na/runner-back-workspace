@@ -76,7 +76,7 @@
 	</insert>
 	
 	
-<!-- 소셜등록 -->
+	<!-- 소셜등록 -->
 	<insert id="insertSocialUser" parameterType="SocialUser">
 		INSERT 
 		INTO	TB_SOCIAL_USER (
@@ -97,10 +97,13 @@
 			 , USER_ID userId
 			 , USER_PWD userPwd 
 			 , ROLE role
+			 , STATUS status
+			
 		  FROM	
 		  	   TB_MEMBER 
 		 WHERE  
 			   USER_ID = #{userId} 
+		
 		
 	</select>
 	
@@ -165,7 +168,6 @@
 		SELECT 	
 				SOCIAL_ID socialId
 				,USER_NO userNo
-				,TYPE
 		FROM 	
 				TB_SOCIAL_USER
 		WHERE 	

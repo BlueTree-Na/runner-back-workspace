@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.runners.auth.model.service.SnsService;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,10 +45,17 @@ public class SNSController {
 	 */
 
 	@GetMapping("/naver/login-url")
-	public ResponseEntity<String> getNaverLoginUrl() {
+	public ResponseEntity<Map<String, String>> getNaverLoginUrl() {
 		
 		String state = UUID.randomUUID().toString();
+		/*
+		 * Cookie stateCookie = new Cookie("NAVER_STATE", state);
+		 * stateCookie.setPath("/"); // 모든 경로에서 접근 가능하도록 설정
+		 * stateCookie.setHttpOnly(true); // 클라이언트 JS 접근 차단 (보안 강화)
+		 * stateCookie.setMaxAge(300); // 300초(5분) 후 만료 response.addCookie(stateCookie);
+		 */
 		log.info("state:{}", state);
+		
 		String naverLoginUrl = "https://nid.naver.com/oauth2.0/authorize"
 	            + "?response_type=code"
 	            + "&client_id=" + clientId
@@ -58,16 +63,16 @@ public class SNSController {
 	            + "&state=" + state;
 	
 		log.info("naverLoginUrl:{}", naverLoginUrl);
-		 return ResponseEntity.ok(naverLoginUrl);
+		return ResponseEntity.ok(Map.of("naverLoginUrl", naverLoginUrl, "state", state));
 	}
 	
 	
     @GetMapping(value = "/naver/oauth", produces = "application/json; charset=UTF-8")
     @ResponseBody
     public ResponseEntity<Map<String, String>> naverOAuth(@RequestParam(value="code",required=false) String code, 
-                                   @RequestParam(value="state",required=false) String state,
-                                   HttpServletResponse response, HttpServletRequest request) {
-    	
+                                   						  @RequestParam(value="state",required=false) String state
+                                   						 ) {
+		
 		// 네이버 로그인 후 회원가입/로그인 및 JWT 토큰 발급
 //		log.info("code:{}, state:{}", code,state);
 		// 회원없으면 회원가입, 있으면 로그인, tokenMap -> jwt..

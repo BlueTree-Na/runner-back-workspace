@@ -170,7 +170,7 @@ public class SnsLoginUtil {
 			result.put("message", "FAIL");
 		}
 		
-		return result;
+		return result; 
 	}
 	
 	/**

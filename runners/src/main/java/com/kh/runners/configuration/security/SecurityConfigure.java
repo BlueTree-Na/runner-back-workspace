@@ -50,10 +50,10 @@ public class SecurityConfigure {
 							.csrf(AbstractHttpConfigurer::disable)
 							.cors(Customizer.withDefaults())
 							.authorizeHttpRequests(requests -> {
-								requests.requestMatchers("/members", "/members/login", "/uploads/**", "/members/**", "/members/naver/**").permitAll();	
+								requests.requestMatchers("/uploads/**", "/members/**", "/members/naver/**").permitAll();	
 								requests.requestMatchers(HttpMethod.PUT, "/members","/members/**","/schedule/**").authenticated(); 
 								requests.requestMatchers("/admin/**").hasRole("ADMIN"); 
-								requests.requestMatchers(HttpMethod.DELETE, "members","/schedule/**").authenticated(); 	// 삭제
+								requests.requestMatchers(HttpMethod.DELETE, "/members","/schedule/**").authenticated(); 	// 삭제
 								requests.requestMatchers(HttpMethod.POST, "/profileUpdate", "/members/refresh", "/schedule/**").authenticated();		// 리프래시토큰 갱신
 								requests.requestMatchers(HttpMethod.GET, "/profileUpdate").authenticated(); 
 								requests.requestMatchers(HttpMethod.GET, "/schedule/**", "/course/**").permitAll();
@@ -63,6 +63,7 @@ public class SecurityConfigure {
 							.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
 							.build();
 	}
+
 
 	// 암호문
 	@Bean

@@ -18,8 +18,10 @@ public interface MemberService {
 	void changePassword(ChangePasswordDTO changeEntity);
 
 	void deleteByPassword(Map<String, String> password);
+	// 중복체크
+	int countByEmail(String email);
+	int countByNickname(String nickName);
 	
-
 	UpdateMemberDTO updateMember(UpdateMemberDTO updateMemberDTO, MultipartFile file);
 
 	 // ========== 공통/기존 메서드 ==========
@@ -44,6 +46,8 @@ public interface MemberService {
 	Member findByUserId(String userId);
 	// 소셜로그인 member insert용
 	Long insertFristSocialUser(MemberDTO requestMember);
+	
+	
 
 
 
