@@ -14,8 +14,7 @@ import lombok.ToString;
 public class SocialUser {
     private String socialId; 
     private Long userNo;    
-    private String nickname;
-    private String userPwd;
+    private String nickName;
     private String userName;
     private String phone;
     private String gender;

@@ -210,6 +210,7 @@ public class SnsLoginUtil {
 	        
 	        result.put("id", (String) responseObj.get("id"));
 	        result.put("nickname", (String) responseObj.get("nickname"));
+	        result.put("name", (String) responseObj.get("name"));
 	        result.put("email", (String) responseObj.get("email"));
 	        result.put("mobile", (String) responseObj.get("mobile"));
 	        

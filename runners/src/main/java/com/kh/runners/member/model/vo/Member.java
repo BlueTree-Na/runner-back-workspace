@@ -16,6 +16,7 @@ import lombok.ToString;
 public class Member {
 
 	private Long userNo;
+	private String socialId;
 	private String userName;
 	private String userId;
 	private String userPwd;
@@ -26,7 +27,7 @@ public class Member {
 	private String role;
 	private String createAt;
 	private String status;
-	private String FileUrl;
-	private String a;
+	private String fileUrl;
+	private String type;
 	
 }
