@@ -12,4 +12,6 @@ public interface CourseMapper {
 
 	List<Running> findAll(RowBounds rowBounds);
 	
+	Running findById(String runningId);
+	
 }

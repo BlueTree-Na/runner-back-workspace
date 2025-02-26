@@ -8,4 +8,6 @@ public interface CourseService {
 	
 	List<Running> findAll(int page);
 	
+	Running findById(String runningId);
+	
 }

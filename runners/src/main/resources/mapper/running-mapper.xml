@@ -23,7 +23,7 @@
 			   COURS_SPOT_LA AS courseLat,
 			   COURS_SPOT_LO AS courseLon
 	</sql>
-
+	
 	<select id="findAll" resultType="Running">
 		<include refid="runningColumn" />
 		  FROM 
@@ -31,6 +31,15 @@
 		 WHERE 
 			   LNM_ADDR LIKE '%' || '서울' || '%'
 	</select>
+	
+	<select id="findById" resultType="Running">
+		<include refid="runningColumn" />
+		  FROM
+		  	   TB_RUNNING
+		 WHERE
+		 	   ESNTL_ID = #{runningId}
+	</select>
+	
 	
 	<select id="selectSearchList" parameterType="hashmap" resultType="Running">
 		<include refid="runningColumn" />
