@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +27,13 @@ public class CourseController {
 	public ResponseEntity<List<Running>> findAll(@RequestParam(name="page") int page){
 		
 		return ResponseEntity.ok().body(courseService.findAll(page));
+	}
+	
+	
+	@GetMapping("/{runningId}")
+	public ResponseEntity<Running> findById(@PathVariable(name="runningId") String runningId){
+		
+		return ResponseEntity.ok().body(courseService.findById(runningId));
 	}
 	
 }

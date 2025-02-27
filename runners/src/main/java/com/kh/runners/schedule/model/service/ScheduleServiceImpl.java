@@ -1,5 +1,8 @@
 package com.kh.runners.schedule.model.service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.session.RowBounds;
@@ -26,10 +29,13 @@ public class ScheduleServiceImpl implements ScheduleService {
 	private final AuthenticationService authService;
 	private final CourseService courseService;
 	
+	
 	@Override
 	public void save(ScheduleDTO scheduleDto) {
 		
-		// 등록 페이지 권한 => SecurityConfiguration => 토큰으로 인가
+		CustomUserDetails userDetails = validAuthUser(scheduleDto);
+		
+		scheduleDto.setScheduleWriter(userDetails.getUserNo().toString());
 		
 		// 날짜 검증 ==> selectDate
 		// 이전 날짜 선택 불가능 ==> 현재 날짜보다 이전이면 안됨
@@ -41,7 +47,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 		// 공백여부 
 		// 크기 제한 여부
 		
-		// null여부 ==> valid로 판단 했나?
+		// null여부 ==> valid로 판단
 		
 		// 검증 절차 이후 Data Insert
 		scheduleMapper.save(scheduleDto);
@@ -113,8 +119,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 		
 		CustomUserDetails userDetails = authService.getAuthenticatedUser();
 		
-		String writer = scheduleDto.getScheduleWriter();
-		authService.validWriter(writer, userDetails.getUsername());
+		authService.validWriter(scheduleDto.getScheduleWriter(), userDetails.getUsername());
 		
 		return userDetails;
 	}

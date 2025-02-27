@@ -16,7 +16,6 @@ public class CourseServiceImpl implements CourseService {
 
 	private final CourseMapper courseMapper;
 	
-	
 	@Override
 	public List<Running> findAll(int page) {
 		
@@ -26,5 +25,16 @@ public class CourseServiceImpl implements CourseService {
 		
 		return courseMapper.findAll(rowBounds);
 	}
+
+
+	@Override
+	public Running findById(String runningId) {
+
+		return courseMapper.findById(runningId);
+	}
+
+
+	
+	
 
 }
